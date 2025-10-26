@@ -1,0 +1,53 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git url: 'https://github.com/Praveenchenu/sample-repo.git', branch: 'main'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    dockerImage = docker.build("my-static-site:${env.BUILD_NUMBER}")
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    // Login to your docker registry if needed
+                    // docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-creds') {
+                    //    dockerImage.push()
+                    // }
+                    // For now, just tag latest
+                    dockerImage.push("latest")
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                // Example: deploy to some server or run container
+                // We’ll just print out info for now
+                echo "Deploying image my-static-site:${env.BUILD_NUMBER}"
+                // You could SSH to server, run docker pull & run etc.
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+        success {
+            echo "Pipeline succeeded"
+        }
+        failure {
+            echo "Pipeline failed"
+        }
+    }
+}
