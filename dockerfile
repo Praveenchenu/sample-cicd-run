@@ -8,6 +8,6 @@ RUN rm -rf /usr/share/nginx/html/*
 COPY . /usr/share/nginx/html
 
 # Expose port 80 (the default nginx port)
-EXPOSE 80 E
+EXPOSE 80 
 
 # Start nginx (the base image’s CMD is already to run nginx in the foreground)
